@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
     BCrypt::Password.new(self.password_digest).is_password?(password)
   end
 
-  def find_by_credentials(email, password)
+  def self.find_by_credentials(email, password)
     user = User.find_by({:email => email})
 
     if user.correct_password?(password)
@@ -27,6 +27,11 @@ class User < ActiveRecord::Base
   end
 
 
+  def reset_session_token!
+    self.session_token = generate_session_token
+    self.save!
+    self.session_token
+  end
 
   private
 
@@ -38,10 +43,5 @@ class User < ActiveRecord::Base
     self.session_token ||= generate_session_token
   end
 
-  def reset_session_token!
-    self.session_token = generate_session_token
-    self.save!
-    self.session_token
-  end
 
 end

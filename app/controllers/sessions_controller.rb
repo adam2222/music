@@ -1,6 +1,11 @@
 class SessionsController < ApplicationController
 
-  def show
+  def new
+    # Redirect to sign-in page
+    render :new
+  end
+
+  def create
     @user = User.find_by_credentials(
       params[:user][:email],
       params[:user][:password]
@@ -11,13 +16,10 @@ class SessionsController < ApplicationController
       render :new
     else
       login(@user)
-      redirect_to user_url
+      redirect_to user_url(@user.id)
     end
   end
 
-  def new
-    render :new
-  end
 
   def destroy
     logout(@user)
